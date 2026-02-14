@@ -132,7 +132,7 @@ impl<'a> State<'a> {
         let my_master_renderer = MasterRenderer::new(&device, &uniform_layout); //
 
         let mut camera = Camera::new();
-        camera.position.z = -30.0; // Move the camera back 5 units
+        camera.position.z = -10.0; // Move the camera back 5 units
 
         let sun = Light::new();
 

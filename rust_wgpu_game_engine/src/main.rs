@@ -5,9 +5,6 @@ use rust_wgpu_game_engine::game_engine::{
     loader,
     main_shader,
     master_renderer::MasterRenderer, // Added
-    model_texture,
-    raw_model,
-    renderer::Renderer, // Import your new renderer
     textured_model::TexturedModel,
 };
 use std::sync::Arc;
@@ -27,9 +24,7 @@ struct State<'a> {
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
     window: Arc<Window>,
-    my_loader: loader::Loader,
     my_shader: main_shader::MainShader,
-    // Note: my_renderer is usually managed by MasterRenderer
     my_master_renderer: MasterRenderer,
     camera: Camera,
     sun: Light,
@@ -156,7 +151,6 @@ impl<'a> State<'a> {
             queue,
             config,
             size,
-            my_loader,
             my_shader,
             my_master_renderer,
             camera,

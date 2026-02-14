@@ -15,10 +15,7 @@ We're going to fix that by modifying our build script to copy our res folder to 
 use anyhow::*;
 use fs_extra::copy_items;
 use fs_extra::dir::CopyOptions;
-use std::collections::HashMap;
 use std::env;
-use std::io::BufRead;
-use std::{ffi::c_void, fs::File, io::BufReader};
 
 fn main() -> Result<()> {
     // This tells Cargo to rerun this script if something in /res/ changes.

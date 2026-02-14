@@ -34,7 +34,6 @@ struct State<'a> {
     camera: Camera,
     sun: Light,
     entities: Vec<Entity>, // Removed duplicate declaration
-
 }
 
 impl<'a> State<'a> {
@@ -132,7 +131,7 @@ impl<'a> State<'a> {
         let my_master_renderer = MasterRenderer::new(&device, &uniform_layout); //
 
         let mut camera = Camera::new();
-        camera.position.z = -10.0; // Move the camera back 5 units
+        camera.position.z = 10.0; // Move the camera back 5 units
 
         let sun = Light::new();
 
@@ -149,7 +148,6 @@ impl<'a> State<'a> {
             1.0,
             0,
         );
-
 
         Self {
             window,
@@ -281,7 +279,7 @@ impl<'a> ApplicationHandler for App<'a> {
                     KeyCode::KeyA => {
                         for entity in &mut state.entities {
                             // Rotate by 0.5 degrees in radians
-                            entity.increase_rotation(0.0, 0.0872665, 0.0);
+                            entity.increase_rotation(0.05, 0.0872665, 0.05);
                         }
                     }
                     _ => (),

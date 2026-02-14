@@ -17,11 +17,11 @@ impl Camera {
         }
     }
 
-    pub fn build_view_matrix(&self) -> Mat4 {
-        // The view matrix is the inverse of the camera's transformation matrix
-        let rotation = Quat::from_euler(EulerRot::XYZ, self.pitch, self.yaw, self.roll);
-        Mat4::from_rotation_translation(rotation, self.position).inverse()
-    }
+ pub fn build_view_matrix(&self) -> Mat4 {
+    let rotation = Quat::from_euler(EulerRot::XYZ, self.pitch, self.yaw, self.roll);
+    // The view matrix is the inverse of where the camera "is" in the world
+    Mat4::from_rotation_translation(rotation, self.position).inverse()
+}
 
     pub fn get_position(&self) -> Vec3 {
         self.position

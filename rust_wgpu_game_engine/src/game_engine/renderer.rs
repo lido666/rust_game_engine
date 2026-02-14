@@ -46,40 +46,32 @@ impl Renderer {
     }
 
     pub fn render_entities<'a>(
-    &'a self,
-    render_pass: &mut wgpu::RenderPass<'a>,
-    entities: &'a Vec<Entity>,
-    queue: &wgpu::Queue,
-    view_matrix: &Mat4,
-) {
-    // 1. Calculate the aspect ratio dynamically or use your constant
-    let aspect = 1.77; 
+        &'a self,
+        render_pass: &mut wgpu::RenderPass<'a>,
+        entities: &'a Vec<Entity>,
+        queue: &wgpu::Queue,
+        view_matrix: &Mat4,
+    ) {
+        let aspect = 1.77; // Ensure this matches your window aspect ratio
 
-    // 2. Switch to perspective projection
-    // fov: Field of view in radians (e.g., 45 degrees)
-    // aspect: width / height
-    // near/far: distances from camera
-    let projection = Mat4::perspective_lh(
-        45.0f32.to_radians(), 
-        aspect, 
-        0.1, 
-        100.0
-    );
-    
-    let pv_matrix = projection * *view_matrix;
+        // Switch to Right-Handed Perspective
+        // fov: 45 degrees, near plane: 0.1, far plane: 100.0
+        let projection = Mat4::perspective_rh(45.0f32.to_radians(), aspect, 0.1, 100.0);
 
-    for entity in entities {
-        let matrix = pv_matrix * entity.create_transformation_matrix();
-        let matrix_array: [[f32; 4]; 4] = matrix.to_cols_array_2d();
+        let pv_matrix = projection * *view_matrix;
 
-        queue.write_buffer(
-            &self.transform_buffer,
-            0,
-            bytemuck::cast_slice(&[matrix_array]),
-        );
+        for entity in entities {
+            let matrix = pv_matrix * entity.create_transformation_matrix();
+            let matrix_array: [[f32; 4]; 4] = matrix.to_cols_array_2d();
 
-        render_pass.set_bind_group(1, &self.transform_bind_group, &[]);
-        render_pass.draw_indexed(0..entity.model.model.num_indices, 0, 0..1);
+            queue.write_buffer(
+                &self.transform_buffer,
+                0,
+                bytemuck::cast_slice(&[matrix_array]),
+            );
+
+            render_pass.set_bind_group(1, &self.transform_bind_group, &[]);
+            render_pass.draw_indexed(0..entity.model.model.num_indices, 0, 0..1);
+        }
     }
-}
 }

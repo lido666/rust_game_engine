@@ -403,7 +403,7 @@ impl Loader {
     /// externally visible loader
     ///
 
-  /// Externally visible loader that converts ObjData into a RawModel
+    /// Externally visible loader that converts ObjData into a RawModel
     pub fn load_3d_model(&mut self, filename: &str) -> RawModel {
         let model_data: ObjData = Loader::load_obj_file(filename);
 
@@ -419,10 +419,7 @@ impl Loader {
                     model_data.vertices[i * 3 + 1],
                     model_data.vertices[i * 3 + 2],
                 ],
-                tex_coords: [
-                    model_data.texture[i * 2],
-                    model_data.texture[i * 2 + 1],
-                ],
+                tex_coords: [model_data.texture[i * 2], model_data.texture[i * 2 + 1]],
                 normal: [
                     model_data.normal[i * 3],
                     model_data.normal[i * 3 + 1],

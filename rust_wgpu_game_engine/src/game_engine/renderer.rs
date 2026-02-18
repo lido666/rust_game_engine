@@ -2,16 +2,29 @@ use super::entity::Entity;
 use super::textured_model::TexturedModel;
 use glam::Mat4;
 
+
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
+struct EntityUniforms {
+    transform: [[f32; 4]; 4],
+    tex_offset: [f32; 2],
+    num_rows: f32,
+    _padding: f32, // Added for 16-byte alignment (vec2 + float + padding = 16 bytes)
+}
+
 pub struct Renderer {
     pub transform_buffer: wgpu::Buffer,
     pub transform_bind_group: wgpu::BindGroup,
 }
 
 impl Renderer {
-    pub fn new(device: &wgpu::Device, layout: &wgpu::BindGroupLayout) -> Self {
+pub fn new(device: &wgpu::Device, layout: &wgpu::BindGroupLayout) -> Self {
+        
         let transform_buffer = device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("Transform Buffer"),
-            size: std::mem::size_of::<[[f32; 4]; 4]>() as u64,
+            size: std::mem::size_of::<EntityUniforms>() as u64,
             usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
         });
@@ -62,12 +75,20 @@ impl Renderer {
 
         for entity in entities {
             let matrix = pv_matrix * entity.create_transformation_matrix();
-            let matrix_array: [[f32; 4]; 4] = matrix.to_cols_array_2d();
+//            let matrix_array: [[f32; 4]; 4] = matrix.to_cols_array_2d();
 
+            let uniforms = EntityUniforms {
+                transform: matrix.to_cols_array_2d(),
+                tex_offset: entity.get_texture_offset().into(), // Uses logic from entity.rs
+                num_rows: entity.model.get_texture().get_number_of_rows() as f32,
+                _padding: 0.0,
+            };
+
+            // 4. Write the expanded struct to the buffer
             queue.write_buffer(
                 &self.transform_buffer,
                 0,
-                bytemuck::cast_slice(&[matrix_array]),
+                bytemuck::cast_slice(&[uniforms]),
             );
 
             render_pass.set_bind_group(1, &self.transform_bind_group, &[]);

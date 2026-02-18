@@ -187,7 +187,7 @@ impl Loader {
     }
 
     pub fn load_texture(&mut self) -> ModelTexture {
-        let diffuse_bytes = include_bytes!("../../happy-tree.png");
+        let diffuse_bytes = include_bytes!("../../res/maze.png");
         let diffuse_image = image::load_from_memory(diffuse_bytes).unwrap();
         let diffuse_rgba = diffuse_image.to_rgba8();
         let dimensions = image::GenericImageView::dimensions(&diffuse_image);

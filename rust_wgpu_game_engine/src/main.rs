@@ -130,8 +130,10 @@ impl<'a> State<'a> {
 
         let sun = Light::new();
 
-        let raw_model = my_loader.load_3d_model("cube.obj");
-        let texture = my_loader.load_texture();
+        let raw_model = my_loader.load_3d_model("res/cube.obj");
+        let mut texture = my_loader.load_texture();
+        texture.number_of_rows = 8;
+
         let textured_model = TexturedModel::new(&raw_model, &texture);
 
         let entity = Entity::new(
@@ -141,7 +143,7 @@ impl<'a> State<'a> {
             0.0,
             0.0,
             1.0,
-            0,
+            2,
         );
 
         Self {
